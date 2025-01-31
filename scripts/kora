@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Définir le chemin vers le répertoire des scripts
+SCRIPTS_DIR="/etc/kora/script"
+
+# Vérifier si le chemin existe
+if [ ! -d "$SCRIPTS_DIR" ]; then
+  echo "Le chemin spécifié n'existe pas ou n'est pas un répertoire : $SCRIPTS_DIR"
+  exit 1
+fi
+
+# Appeler le script Python avec le chemin comme argument
+python3 kora.py "$SCRIPTS_DIR"
