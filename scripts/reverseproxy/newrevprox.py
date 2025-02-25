@@ -28,7 +28,7 @@ def create_revproxy_file(domain_name, destination_url):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: newrevprox.py <domain_name> <destination_url>")
+        print("Usage: newrevprox.py <domain_name> <destination_url>:<destination_port>")
         sys.exit(1)
     
     domain_name = sys.argv[1]
