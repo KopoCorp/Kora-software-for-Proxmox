@@ -19,6 +19,7 @@ mkdir -p /usr/share/pve-manager/kora_image
 cp installation/misc/image/kora_logo.png /usr/share/pve-manager/kora_image/logo-128.png
 cp installation/misc/image/kora_prox_banner.png /usr/share/pve-manager/kora_image/proxmox_logo.png
 ln -s /usr/share/pve-manager/kora_image/ /etc/kora/image
+bash /etc/kora/script/misc/logo_update.sh
 
 # Ajout de la mise à jour du logo dans la crontab
 echo "Ajout du script pour le logo dans la crontab"
