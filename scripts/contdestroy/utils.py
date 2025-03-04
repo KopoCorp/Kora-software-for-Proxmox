@@ -43,9 +43,7 @@ def pct_destroy(container_id, params):
 
     # Journaliser l'action sur le conteneur
     logger.info(f"Tentative de destruction du conteneur {container_id} avec les paramètres : {params}")
-    if success:
-        logger.info(f"Conteneur {container_id} détruit avec succès.")
-    else:
+    if not success:
         logger.error(f"Échec de la destruction du conteneur {container_id}. Raison : {reason}")
 
     return success, reason
