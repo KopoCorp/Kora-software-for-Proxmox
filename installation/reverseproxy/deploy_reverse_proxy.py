@@ -47,12 +47,7 @@ print("Démarrage de nginx...")
 # allumage de nginx
 try:
     subprocess.run(['systemctl', 'start', 'nginx'], check=True)
-except subprocess.CalledProcessError as e:
-    print("Erreur lors du démarrage du firewall.", file=sys.stderr)
-    sys.exit(1)
-# callumage auto nginx
-try:
-    subprocess.run(['systemctl', 'enable', 'nginx'], check=True)
+
 except subprocess.CalledProcessError as e:
     print("Erreur lors du démarrage du firewall.", file=sys.stderr)
     sys.exit(1)
