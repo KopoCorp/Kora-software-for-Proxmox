@@ -113,7 +113,7 @@ def install_software(software):
     try:
         logger.info(f"Installation du logiciel {software}...")
         subprocess.run(
-            ["sudo", "apt", "install", "-y", software],
+            ["apt", "install", "-y", software],
             check=True
         )
         logger.info(f"Logiciel {software} installé avec succès.")
