@@ -122,7 +122,10 @@ def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, 
             current_ct_number += 1
 
         # Nom du conteneur avec suffixe
-        name = f"{base_name}-{created_ct_count}" if created_ct_count > 0 else base_name
+        if base_name:
+            name = f"{base_name}-{created_ct_count}" if created_ct_count > 0 else base_name
+        else:
+            name = str(current_ct_number)  # Utilise directement le numéro comme nom par défaut
 
         # Mot de passe personnalisé pour chaque conteneur
         current_password = password

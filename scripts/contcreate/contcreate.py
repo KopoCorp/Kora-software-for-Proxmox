@@ -70,7 +70,7 @@ def main():
             CTNumber=CTNumber,
             template=template,
             node=args.node,
-            base_name=args.name if args.name else f"CT{CTNumber}",
+            base_name=args.name if args.name else None,
             loop_count=args.loop,
             start_after_creation=args.start
         )
