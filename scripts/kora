@@ -10,4 +10,7 @@ if [ ! -d "$SCRIPTS_DIR" ]; then
 fi
 
 # Appeler le script Python avec le chemin comme argument
-python3 kora.py "$SCRIPTS_DIR"
+if ! python3 "$SCRIPTS_DIR/kora.py" "$SCRIPTS_DIR"; then
+  echo "Erreur lors de l'exécution du script Python."
+  exit 1
+fi
