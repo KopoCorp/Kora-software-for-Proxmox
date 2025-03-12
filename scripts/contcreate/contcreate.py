@@ -17,7 +17,7 @@ def main():
     parser.add_argument("-s", "--storage", help="Taille du stockage en Go", default=DEFAULT_STORAGE)
     parser.add_argument("--start", help="Démarrer le conteneur après la création", action="store_true")
     parser.add_argument("-t", "--template", help="Nom du template", default=None)
-    parser.add_argument("--storage-type", help="Type de stockage (local ou local-lvm)", choices=["local", "local-lvm"], default=None)
+    parser.add_argument("--storage-type", help="Type de stockage", default=None)
     parser.add_argument("-g", "--group", help="Nom du groupe d'utilisateurs", default=None)
     args = parser.parse_args()
 

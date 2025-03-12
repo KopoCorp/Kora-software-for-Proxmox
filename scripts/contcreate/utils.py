@@ -227,9 +227,30 @@ def log_creation(template, CTNumber):
     """Log la création d'un conteneur avec le template utilisé"""
     logger.info(f"Conteneur créé: {CTNumber} avec le template {template}")
 
+
+def get_storage_types():
+    """Récupère les types de stockage disponibles en utilisant la commande `pvesm status`."""
+    try:
+        result = subprocess.run(["pvesm", "status"], capture_output=True, text=True, check=True)
+        storage_types = []
+        for line in result.stdout.splitlines()[1:]:  # Ignorer la première ligne d'en-tête
+            storage_name = line.split()[0]
+            storage_types.append(storage_name)
+        return storage_types
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Erreur lors de l'exécution de `pvesm status`: {e}")
+        return []
+
 def choose_storage_type():
-    """Demande à l'utilisateur de choisir le type de stockage"""
-    storage_types = ["local", "local-lvm"]
+    """Demande à l'utilisateur de choisir le type de stockage parmi les options disponibles."""
+    storage_types = get_storage_types()
+    if not storage_types:
+        logger.error("Aucun type de stockage disponible.")
+        return None
+
+    if len(storage_types) == 1:
+        return storage_types[0]
+
     print("Types de stockage disponibles:")
     for idx, storage_type in enumerate(storage_types, 1):
         print(f"{idx}. {storage_type}")
