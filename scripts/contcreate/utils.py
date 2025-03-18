@@ -42,7 +42,7 @@ def get_next_ct_number():
         return None
 
 
-def create_container(password, ram, cpu, storage, CTNumber, template, node, name, prompt_password=False):
+def create_container(password, ram, cpu, storage, CTNumber, template, node, name, storage_type="local-lvm"):
     """ Fonction créant un conteneur"""
     if not is_valid_ct_number(int(CTNumber)):  # S'assurer que CTNumber est un entier
         print(f"Numéro de conteneur invalide: {CTNumber}")
@@ -57,7 +57,6 @@ def create_container(password, ram, cpu, storage, CTNumber, template, node, name
         print("La RAM ne doit pas être inférieure à 16.")
         exit(1)
     
-    
     # Assigner une IP basée sur le CTNumber
     ip_address = assign_ip(CTNumber)
 
@@ -67,7 +66,7 @@ def create_container(password, ram, cpu, storage, CTNumber, template, node, name
         create_command = (
             f"pct create {CTNumber} {TEMPLATE_DIR}{template} --cores {cpu} "
             f"--memory {ram} "
-            f"--rootfs local:{storage},size={storage} "
+            f"--rootfs {storage_type}:{storage},size={storage} "
             f"--password {password} "
             f"--hostname {name} "
             f"--features nesting=1 "
@@ -81,26 +80,26 @@ def create_container(password, ram, cpu, storage, CTNumber, template, node, name
         # Exécuter la commande tout en filtrant la sortie SSH
         process = subprocess.Popen(create_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                    text=True)
-        for line in process.stdout:
+        stdout, stderr = process.communicate()
+
+        for line in stdout.splitlines():
             # Filtrer les lignes SSH
             if "Creating SSH host key" not in line and "done: SHA256:" not in line:
                 print(line.strip())  # Imprimer directement sans le logger
 
-        process.wait()  # Attendre que le processus se termine
-
         if process.returncode == 0:
             return True
         else:
-            print(f"Erreur lors de la création du conteneur {CTNumber}.")
+            print(f"Erreur lors de la création du conteneur {CTNumber}: {stderr.strip()}")
             return False
 
-    except subprocess.CalledProcessError:
-        print(f"Erreur lors de la création du conteneur {CTNumber}.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erreur lors de la création du conteneur {CTNumber}: {str(e)}")
         return False
 
 
 def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, node, base_name, loop_count,
-                               start_after_creation):
+                               start_after_creation, storage_type="local-lvm"):
     """
     Créer plusieurs conteneurs avec les mêmes paramètres, mais des noms et CTNumber différents.
     Gère également les options de mot de passe.
@@ -130,7 +129,12 @@ def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, 
         # Mot de passe personnalisé pour chaque conteneur
         current_password = password
         if not use_same_password:
-            current_password = getpass.getpass(prompt='Veuillez entrer le mot de passe pour le conteneur (5 caractères minimum): ')
+            while True:
+                current_password = getpass.getpass(prompt='Veuillez entrer le mot de passe pour le conteneur (5 caractères minimum): ')
+                if len(current_password) >= 5:
+                    break
+                else:
+                    print("Le mot de passe doit comporter au moins 5 caractères.")
 
         # Création du conteneur
         success = create_container(
@@ -141,7 +145,8 @@ def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, 
             CTNumber=current_ct_number,  # Utiliser le numéro de conteneur actuel
             template=template,
             node=node,
-            name=name
+            name=name,
+            storage_type=storage_type
         )
 
         if success:
@@ -221,3 +226,38 @@ def list_roles():
 def log_creation(template, CTNumber):
     """Log la création d'un conteneur avec le template utilisé"""
     logger.info(f"Conteneur créé: {CTNumber} avec le template {template}")
+
+
+def get_storage_types():
+    """Récupère les types de stockage disponibles en utilisant la commande `pvesm status`."""
+    try:
+        result = subprocess.run(["pvesm", "status"], capture_output=True, text=True, check=True)
+        storage_types = []
+        for line in result.stdout.splitlines()[1:]:  # Ignorer la première ligne d'en-tête
+            storage_name = line.split()[0]
+            storage_types.append(storage_name)
+        return storage_types
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Erreur lors de l'exécution de `pvesm status`: {e}")
+        return []
+
+def choose_storage_type():
+    """Demande à l'utilisateur de choisir le type de stockage parmi les options disponibles."""
+    storage_types = get_storage_types()
+    if not storage_types:
+        logger.error("Aucun type de stockage disponible.")
+        return None
+
+    if len(storage_types) == 1:
+        return storage_types[0]
+
+    print("Types de stockage disponibles:")
+    for idx, storage_type in enumerate(storage_types, 1):
+        print(f"{idx}. {storage_type}")
+    choice = input("Veuillez entrer le numéro du type de stockage: ")
+    try:
+        return storage_types[int(choice) - 1]
+    except (IndexError, ValueError):
+        logger.error("Choix de type de stockage invalide.")
+        return None
+    

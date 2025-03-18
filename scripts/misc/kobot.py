@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-import rich
-from rich.console import Console
+
 from rich import print
 import re
 import os
@@ -361,5 +360,5 @@ kobot = "\
 print(colorize_text(kobot))
 print("\
           ===Welcome on [#6C6392]Kora[/#6C6392] [#FFFFFF]systems[/#FFFFFF]===\n\
-                          [#6C6392]V0.13[/#6C6392]\n\
+                          [#6C6392]V0.14[/#6C6392]\n\
 ")
