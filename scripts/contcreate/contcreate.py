@@ -1,27 +1,36 @@
 import argparse
 import subprocess
 import getpass
-from utils import create_multiple_containers, create_container, list_templates, get_next_ct_number, get_users_from_group, assign_permissions, list_roles
+from utils import create_multiple_containers, create_container, list_templates, get_next_ct_number, get_users_from_group, assign_permissions, list_roles, choose_storage_type
 from config import logger, DEFAULT_RAM, DEFAULT_CPU, DEFAULT_STORAGE, DEFAULT_PASSWORD
 
 def main():
-    """Fonction principale pour créer des conterneurs"""
+    """Fonction principale pour créer des conteneurs"""
     parser = argparse.ArgumentParser(description="Script pour créer un conteneur Proxmox")
     parser.add_argument("-c", "--cpu", help="Nombre de cœurs CPU", default=DEFAULT_CPU)
     parser.add_argument("-l", "--loop", help="Nombre de conteneurs à créer", type=int, default=1)
     parser.add_argument("-n", "--number", help="Numéro de conteneur", default=None, type=int)
     parser.add_argument("--name", help="Nom du conteneur", default=None)
-    parser.add_argument("-o", "--node", help="Nom du noeud (node) où installer le conteneur (pas implémenté)", default="local")
+    # parser.add_argument("-o", "--node", help="Nom du noeud (node) où installer le conteneur (pas implémenté)", default="local")
     parser.add_argument("-p", "--password", help="Mot de passe pour le conteneur", action="store_true")
     parser.add_argument("-r", "--ram", help="Taille de RAM en Mo", default=DEFAULT_RAM)
     parser.add_argument("-s", "--storage", help="Taille du stockage en Go", default=DEFAULT_STORAGE)
     parser.add_argument("--start", help="Démarrer le conteneur après la création", action="store_true")
     parser.add_argument("-t", "--template", help="Nom du template", default=None)
+    parser.add_argument("--storage-type", help="Type de stockage", default=None)
     parser.add_argument("-g", "--group", help="Nom du groupe d'utilisateurs", default=None)
     args = parser.parse_args()
 
     CTNumber = args.number if args.number else get_next_ct_number()
     template = args.template or list_templates()
+    if not template:
+        logger.error("Aucun template valide sélectionné. Opération annulée.")
+        return
+
+    storage_type = args.storage_type or choose_storage_type()
+    if not storage_type:
+        logger.error("Aucun type de stockage valide sélectionné. Opération annulée.")
+        return
 
     if args.password:
         password = getpass.getpass(prompt='Veuillez entrer le mot de passe pour le conteneur: ')
@@ -49,7 +58,7 @@ def main():
         for user in users:
             container_id = get_next_ct_number()
             container_name = f"CT{container_id}-{user}"
-            create_container(
+            if create_container(
                 password=password,
                 ram=args.ram,
                 cpu=args.cpu,
@@ -57,12 +66,15 @@ def main():
                 CTNumber=container_id,
                 template=template,
                 node=args.node,
-                name=container_name
-            )
-            assign_permissions(container_id, user, role_selected)
-            logger.info(f"Conteneur '{container_name}' créé avec ID {container_id} et rôle '{role_selected}' attribué à {user}.")
+                name=container_name,
+                storage_type=storage_type
+            ):
+                assign_permissions(container_id, user, role_selected)
+                logger.info(f"Conteneur '{container_name}' créé avec ID {container_id} et rôle '{role_selected}' attribué à {user}.")
+            else:
+                logger.error(f"Échec de la création du conteneur '{container_name}'.")
     elif args.loop > 1:
-        create_multiple_containers(
+        if create_multiple_containers(
             password=password,
             ram=args.ram,
             cpu=args.cpu,
@@ -72,10 +84,14 @@ def main():
             node=args.node,
             base_name=args.name if args.name else None,
             loop_count=args.loop,
-            start_after_creation=args.start
-        )
+            start_after_creation=args.start,
+            storage_type=storage_type
+        ):
+            logger.info(f"{args.loop} conteneurs créés avec succès !")
+        else:
+            logger.error("Échec de la création de plusieurs conteneurs.")
     else:
-        create_container(
+        if create_container(
             password=password,
             ram=args.ram,
             cpu=args.cpu,
@@ -83,12 +99,15 @@ def main():
             CTNumber=CTNumber,
             template=template,
             node=args.node,
-            name=args.name if args.name else f"CT{CTNumber}"
-        )
-        logger.info(f"Conteneur '{args.name if args.name else f'CT{CTNumber}'}' créé avec succès !")
-        if args.start:
-            subprocess.run(f"pct start {CTNumber}", shell=True, check=True)
-            logger.info(f"Conteneur {CTNumber} démarré.")
+            name=args.name if args.name else f"CT{CTNumber}",
+            storage_type=storage_type
+        ):
+            logger.info(f"Conteneur '{args.name if args.name else f'CT{CTNumber}'}' créé avec succès !")
+            if args.start:
+                subprocess.run(f"pct start {CTNumber}", shell=True, check=True)
+                logger.info(f"Conteneur {CTNumber} démarré.")
+        else:
+            logger.error(f"Échec de la création du conteneur '{args.name if args.name else f'CT{CTNumber}'}'.")
 
 if __name__ == "__main__":
     main()
