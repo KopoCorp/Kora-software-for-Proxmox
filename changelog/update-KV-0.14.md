@@ -5,4 +5,4 @@
 
 - Modification kobot :
   - Passage en **0.14**
-  - Suppression import inutilisé
+  - Suppression imports inutilisés
