@@ -10,4 +10,4 @@ if [ ! -d "$SCRIPTS_DIR" ]; then
 fi
 
 # Appeler le script Python avec le chemin comme argument
-python3 kora.py "$SCRIPTS_DIR"
+python3 "$SCRIPTS_DIR"/kora.py "$SCRIPTS_DIR"
