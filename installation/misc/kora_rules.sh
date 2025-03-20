@@ -17,6 +17,9 @@ for d in /etc/kora/script/*; do
   fi
 done
 
+# Rendre exécutables tous les scripts .py et .sh
+find /etc/kora/script/ -type f \( -name "*.py" -o -name "*.sh" \) -exec chmod +x {} \;
+
 ## commande pour le firewall et les regles nat
 alias firew='bash /etc/init.d/kora_firewall.sh'
 alias mynat='vim /etc/init.d/kora_nat_rules.config'
