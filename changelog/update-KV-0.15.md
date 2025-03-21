@@ -1,6 +1,8 @@
 ### Mise à jour **V0.15** du projet Kora **KV-0.15**
 
-- Ajout de permission pour les scripts dans **installation/misc/kora_base.sh**
+- Ajout de permission pour les scripts **installation/misc/kora_base.sh**
+- Modifcation pour les scripts **installation/install-dependancies/install-dependancies.py**
+- suppresion dans le scripts **installation/misc/kora_rules.sh**
 - Suppresion de **submission/**
 - Kobot Passage en **0.15**
 - **Gestion des conteneurs**
@@ -12,4 +14,5 @@
 - **Gestion des utilisateur**
   - Changement du nom de **create.py** pour **usercreate**
   - Changement du nom de **delete.py** pour **userdelete**
+- **reverse proxy**
 - Changement du nom de **newrevprox.py** pour **newrevprox**
