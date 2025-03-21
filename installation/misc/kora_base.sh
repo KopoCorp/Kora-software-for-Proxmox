@@ -8,6 +8,8 @@ mkdir -p /etc/kora/script
 # Deplacement des scripts
 echo "Ajout du Kobot"
 cp -rf scripts/* /etc/kora/script/.
+# Rend executable les scripts
+chmod -R +x /etc/kora/script
 
 # Configuration du bashrc
 echo "Ajout dans profile.d"
