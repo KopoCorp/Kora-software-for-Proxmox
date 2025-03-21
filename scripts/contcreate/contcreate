@@ -82,7 +82,7 @@ def main():
             storage=args.storage,
             CTNumber=CTNumber,
             template=template,
-            node=args.node,
+            # node=args.node,
             base_name=args.name if args.name else None,
             loop_count=args.loop,
             start_after_creation=args.start,
@@ -99,7 +99,7 @@ def main():
             storage=args.storage,
             CTNumber=CTNumber,
             template=template,
-            node=args.node,
+            # node=args.node,
             name=args.name if args.name else f"CT{CTNumber}",
             storage_type=storage_type
         ):

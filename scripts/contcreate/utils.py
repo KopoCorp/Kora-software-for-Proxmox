@@ -42,7 +42,7 @@ def get_next_ct_number():
         return None
 
 
-def create_container(password, ram, cpu, storage, CTNumber, template, node, name, storage_type="local-lvm"):
+def create_container(password, ram, cpu, storage, CTNumber, template, name, storage_type="local-lvm"):
     """ Fonction créant un conteneur"""
     if not is_valid_ct_number(int(CTNumber)):  # S'assurer que CTNumber est un entier
         print(f"Numéro de conteneur invalide: {CTNumber}")
@@ -98,7 +98,7 @@ def create_container(password, ram, cpu, storage, CTNumber, template, node, name
         return False
 
 
-def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, node, base_name, loop_count,
+def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, base_name, loop_count,
                                start_after_creation, storage_type="local-lvm"):
     """
     Créer plusieurs conteneurs avec les mêmes paramètres, mais des noms et CTNumber différents.
@@ -144,7 +144,7 @@ def create_multiple_containers(password, ram, cpu, storage, CTNumber, template, 
             storage=storage,
             CTNumber=current_ct_number,  # Utiliser le numéro de conteneur actuel
             template=template,
-            node=node,
+            # node=node,
             name=name,
             storage_type=storage_type
         )

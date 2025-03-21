@@ -33,7 +33,7 @@ hostname = get_hostname()
 print("modifcation des fichier de configuration...")
 
 edit_file(hostname,"installation/reverseproxy/default")
-edit_file(hostname,"/etc/kora/script/reverseproxy/newrevprox.py")
+edit_file(hostname,"/etc/kora/script/reverseproxy/newrevprox")
 
 #depalcement des fichier vers les bon repertoir et création des repertoir
 
