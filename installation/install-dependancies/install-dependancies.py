@@ -14,7 +14,7 @@ from utils import (
 
 def main():
     """Script principal pour installer les dépendances."""
-    dependency_files = find_dependency_files()
+    dependency_files = sorted(find_dependency_files())
 
     if not dependency_files:
         logger.info("Aucun fichier de dépendances trouvé.")
