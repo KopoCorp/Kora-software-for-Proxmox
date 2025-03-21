@@ -1,6 +1,7 @@
 ### Mise à jour **V0.15** du projet Kora **KV-0.15**
 
 - Ajout de permission pour les scripts dans **installation/misc/kora_base.sh**
+- Suppresion de **submission/**
 - Kobot Passage en **0.15**
 - **Gestion des conteneurs**
   - Ajout de ```#!/bin/python3``` dans **script/contcreate/contcreate.py**
