@@ -86,6 +86,7 @@ def create_container(CTNumber, config):
             "--rootfs", rootfs,
             "--hostname", hostname,
             "--password", password,
+            "--unprivileged 1",
         ]
 
         # Add all the netX interfaces (net0, net1, etc.)
