@@ -12,7 +12,7 @@ def main():
     parser.add_argument("-l", "--loop", help="Nombre de conteneurs à créer", type=int, default=1)
     parser.add_argument("-n", "--number", help="Numéro de conteneur", default=None, type=int)
     parser.add_argument("--name", help="Nom du conteneur", default=None)
-    # parser.add_argument("-o", "--node", help="Nom du noeud (node) où installer le conteneur (pas implémenté)", default="local")
+    parser.add_argument("-o", "--node", help="Nom du noeud (node) où installer le conteneur (pas implémenté)", default="local")
     parser.add_argument("-p", "--password", help="Mot de passe pour le conteneur", action="store_true")
     parser.add_argument("-r", "--ram", help="Taille de RAM en Mo", default=DEFAULT_RAM)
     parser.add_argument("-s", "--storage", help="Taille du stockage en Go", default=DEFAULT_STORAGE)
