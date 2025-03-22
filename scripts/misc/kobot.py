@@ -360,5 +360,5 @@ kobot = "\
 print(colorize_text(kobot))
 print("\
           ===Welcome on [#6C6392]Kora[/#6C6392] [#FFFFFF]systems[/#FFFFFF]===\n\
-                          [#6C6392]V0.16[/#6C6392]\n\
+                          [#6C6392]V0.17[/#6C6392]\n\
 ")
